@@ -40,7 +40,6 @@
             bool isError;
 
             for (int i = 4; i>0; i--)
-            {
                 for (int j = 0; j < 5-i; j++)
                 {
                     row = random.Next(1, 11);
@@ -89,7 +88,6 @@
                         DrawTheShip();
                     }
                 }
-            }
         }
 
         static private void DrawTheShip()
