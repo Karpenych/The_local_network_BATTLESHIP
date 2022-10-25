@@ -92,7 +92,7 @@
             }
         }
 
-        static public void DrawTheShip()
+        static private void DrawTheShip()
         {
 
         }
