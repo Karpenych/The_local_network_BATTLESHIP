@@ -92,10 +92,7 @@
             }
         }
 
-        static public void DrawTheShip()
-        {
 
-        }
 
     }
 }
