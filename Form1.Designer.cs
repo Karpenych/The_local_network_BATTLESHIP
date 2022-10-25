@@ -601,6 +601,7 @@
             this.btArrangeTheShips.TabIndex = 44;
             this.btArrangeTheShips.Text = "ARRANGE THE SHIPS";
             this.btArrangeTheShips.UseVisualStyleBackColor = false;
+            this.btArrangeTheShips.Click += new System.EventHandler(this.btArrangeTheShips_Click);
             // 
             // btConnect
             // 

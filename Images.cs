@@ -1,33 +1,41 @@
-﻿namespace ButtleShip
+﻿using Microsoft.VisualBasic.Devices;
+using System.Data.Common;
+using System.Windows.Forms;
+
+namespace ButtleShip
 {
     internal class Images
     {
-        static public void MissClick(ref List<PictureBox> lpbs, MouseEventArgs mouse, string path)
+        static public List<PictureBox> myPbShipsList = new();
+
+        static public void MissClick(ref List<PictureBox> lpbs, MouseEventArgs mouse)
         {
             lpbs.Add(new PictureBox());
             lpbs.Last().Left = ((mouse.X - 850) / 50) * 50 + 851;
             lpbs.Last().Top = ((mouse.Y - 300) / 50) * 50 + 301;
-
             lpbs.Last().Width = 48;
             lpbs.Last().Height = 48;
-            lpbs.Last().Image = new Bitmap(path);
+            lpbs.Last().Image = new Bitmap(@"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\Practica\ButtleShip\pictures\splash.png");
             lpbs.Last().SizeMode = PictureBoxSizeMode.Normal;
         }
 
-        static public void HitClick(ref List<PictureBox> lpbs, MouseEventArgs mouse, string path)
+        static public void HitClick(ref List<PictureBox> lpbs, MouseEventArgs mouse)
         {
             lpbs.Add(new PictureBox());
             lpbs.Last().Left = ((mouse.X - 850) / 50) * 50 + 851;
             lpbs.Last().Top = ((mouse.Y - 300) / 50) * 50 + 301;
-
             lpbs.Last().Width = 48;
             lpbs.Last().Height = 48;
-            lpbs.Last().Image = new Bitmap(path);
+            lpbs.Last().Image = new Bitmap(@"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\Practica\ButtleShip\pictures\boom.png");
             lpbs.Last().SizeMode = PictureBoxSizeMode.Normal;
+            
+
         }
 
         static public void ArrandeTheShip()
         {
+            myPbShipsList.Clear();
+
             for (int i = 1; i < 11; i++)
                 for (int j = 1; j  < 11; j ++)
                 {
@@ -85,14 +93,46 @@
                             for (int u = column; u < right; u++)
                                 Cells.myFieldCondition[y, u] = 1;
 
-                        DrawTheShip();
+                        DrawMyShips(i, direction, row, column, ref myPbShipsList);
                     }
                 }
         }
 
-        static private void DrawTheShip()
+        static private void DrawMyShips(in int i, in int direction, in int row, in int column, ref List<PictureBox> myPbShipsList)
         {
+            if (direction == 0)
+            {
+                if (i == 4)
+                    AddShipInList(myPbShipsList, row, column, 198, 48, "ship4hor.png");
+                else if (i == 3)
+                    AddShipInList(myPbShipsList, row, column, 148, 48, "ship3hor.png");
+                else if(i == 2)
+                    AddShipInList(myPbShipsList, row, column, 98, 48, "ship2hor.png");
+                else
+                    AddShipInList(myPbShipsList, row, column, 48, 48, "ship1hor.png");
+            }
+            else
+            {
+                if (i == 4)
+                    AddShipInList(myPbShipsList, row, column, 48, 198, "ship4vert.png");
+                else if (i == 3)
+                    AddShipInList(myPbShipsList, row, column, 48, 148, "ship3vert.png");
+                else if (i == 2)
+                    AddShipInList(myPbShipsList, row, column, 48, 98, "ship2vert.png");
+                else
+                    AddShipInList(myPbShipsList, row, column, 48, 48, "ship1vert.png");
+            }
+        }
 
+        static private void AddShipInList(in List<PictureBox> myShipsList, in int row, in int column, int width, int height, string name)
+        {
+            myShipsList.Add(new PictureBox());
+            myShipsList.Last().Left = (column - 1) * 50 + 281;
+            myShipsList.Last().Top = (row - 1) * 50 + 301;
+            myShipsList.Last().Height = height;
+            myShipsList.Last().Width = width;
+            myShipsList.Last().Image = new Bitmap(@"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\Practica\ButtleShip\pictures\" + name);
+            myShipsList.Last().SizeMode = PictureBoxSizeMode.Normal;
         }
 
     }

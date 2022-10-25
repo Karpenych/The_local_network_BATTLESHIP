@@ -50,7 +50,7 @@ namespace ButtleShip
         {
             if (mouse.X >= 850 && mouse.X <= 1350 && mouse.Y >= 300 && mouse.Y <= 800)
             {
-                Images.MissClick(ref lpbs, mouse, @"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\splash.png");
+                Images.MissClick(ref lpbs, mouse);
                 Controls.Add(lpbs.Last());
             }
         }
@@ -59,5 +59,19 @@ namespace ButtleShip
         {
             
         }
+
+        private void btArrangeTheShips_Click(object sender, EventArgs e)
+        {
+            if (Images.myPbShipsList.Count > 0)
+                for (int i = 0; i < Images.myPbShipsList.Count; i++)
+                    Controls.Remove(Images.myPbShipsList[i]);
+
+            Images.ArrandeTheShip();
+
+            for (int i = 0; i < Images.myPbShipsList.Count; i++)
+                Controls.Add(Images.myPbShipsList[i]);
+        }
+
+
     }
 }
