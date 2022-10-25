@@ -108,7 +108,7 @@
             // Icon1
             // 
             this.Icon1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Icon1.Image = global::ButtleShip.Properties.Resources.icon1;
+            this.Icon1.Image = ((System.Drawing.Image)(resources.GetObject("Icon1.Image")));
             this.Icon1.Location = new System.Drawing.Point(485, 100);
             this.Icon1.Name = "Icon1";
             this.Icon1.Size = new System.Drawing.Size(100, 100);
@@ -118,7 +118,7 @@
             // Icon2
             // 
             this.Icon2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Icon2.Image = global::ButtleShip.Properties.Resources.icon2;
+            this.Icon2.Image = ((System.Drawing.Image)(resources.GetObject("Icon2.Image")));
             this.Icon2.Location = new System.Drawing.Point(1050, 100);
             this.Icon2.Name = "Icon2";
             this.Icon2.Size = new System.Drawing.Size(100, 100);
