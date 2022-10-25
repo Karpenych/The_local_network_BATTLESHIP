@@ -4,9 +4,9 @@ namespace ButtleShip
     internal class Cells
     {
         /*static public Point[,] myField = new Point[12, 12];
-        static public Point[,] enemyField = new Point[12, 12];*/
+        static public Point[,] enemyField = new Point[12, 12];
 
-        /*static public void MatricaFieldsFill()
+        static public void MatricaFieldsFill()
         {
             // My field fill
             int fieldY = 250;
