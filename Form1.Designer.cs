@@ -615,6 +615,7 @@
             this.btConnect.TabIndex = 45;
             this.btConnect.Text = "CONNECT";
             this.btConnect.UseVisualStyleBackColor = false;
+            this.btConnect.Visible = false;
             this.btConnect.Click += new System.EventHandler(this.btConnect_Click);
             // 
             // rbHost
@@ -630,6 +631,8 @@
             this.rbHost.TabStop = true;
             this.rbHost.Text = "I\'m host";
             this.rbHost.UseVisualStyleBackColor = true;
+            this.rbHost.Visible = false;
+            this.rbHost.CheckedChanged += new System.EventHandler(this.rbHost_CheckedChanged);
             // 
             // rbGuest
             // 
@@ -644,6 +647,8 @@
             this.rbGuest.TabStop = true;
             this.rbGuest.Text = "I\'m guest";
             this.rbGuest.UseVisualStyleBackColor = true;
+            this.rbGuest.Visible = false;
+            this.rbGuest.CheckedChanged += new System.EventHandler(this.rbGuest_CheckedChanged);
             // 
             // pbMyShip4
             // 
@@ -882,7 +887,6 @@
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "ButtleShip (prod. by Karpenych)";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             ((System.ComponentModel.ISupportInitialize)(this.Icon1)).EndInit();

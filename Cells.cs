@@ -46,6 +46,6 @@ namespace ButtleShip
         static public byte[,] myFieldCondition = new byte[12, 12];
         static public byte[,] enemyFieldCondition = new byte[12, 12];
 
-        
+                
     }
 }

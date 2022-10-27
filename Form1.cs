@@ -1,19 +1,17 @@
+using System.Net.Sockets;
+using System.Net;
 using System.Runtime.CompilerServices;
 
 namespace ButtleShip
 {
     public partial class Form1 : Form
-    { 
-        
-        public List<PictureBox> lpbs = new();
+    {
+        public readonly Socket Socket1 = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        public Socket? Socket2;
 
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -50,18 +48,16 @@ namespace ButtleShip
         {
             if (mouse.X >= 850 && mouse.X <= 1350 && mouse.Y >= 300 && mouse.Y <= 800)
             {
-                Images.MissClick(ref lpbs, mouse);
-                Controls.Add(lpbs.Last());
+                Images.MissClick(ref Images.pbEffectsList, mouse);
+                Controls.Add(Images.pbEffectsList.Last());
             }
-        }
-
-        private void btConnect_Click(object sender, EventArgs e)
-        {
-            
         }
 
         private void btArrangeTheShips_Click(object sender, EventArgs e)
         {
+            rbGuest.Visible = true;
+            rbHost.Visible = true;
+
             if (Images.myPbShipsList.Count > 0)
                 for (int i = 0; i < Images.myPbShipsList.Count; i++)
                     Controls.Remove(Images.myPbShipsList[i]);
@@ -72,6 +68,24 @@ namespace ButtleShip
                 Controls.Add(Images.myPbShipsList[i]);
         }
 
+        private void rbHost_CheckedChanged(object sender, EventArgs e) => btConnect.Visible = true;
+
+        private void rbGuest_CheckedChanged(object sender, EventArgs e) => btConnect.Visible = true; 
+
+        private void btConnect_Click(object sender, EventArgs e)
+        {
+            if (rbHost.Checked == true)
+            {
+                Socket1.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5064));
+                Socket1.Listen(10);
+                Socket2 = Socket1.Accept();
+            }
+            else
+            {
+                try { Socket1.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5064)); }
+                catch { MessageBox.Show("Сервер не отвечает"); }
+            }
+        }
 
     }
 }

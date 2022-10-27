@@ -6,6 +6,7 @@ namespace ButtleShip
 {
     internal class Images
     {
+        static public List<PictureBox> pbEffectsList = new();
         static public List<PictureBox> myPbShipsList = new();
 
         static public void MissClick(ref List<PictureBox> lpbs, MouseEventArgs mouse)
