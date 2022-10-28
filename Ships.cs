@@ -4,34 +4,9 @@ using System.Windows.Forms;
 
 namespace ButtleShip
 {
-    internal class Images
+    internal class Ships
     {
-        static public List<PictureBox> pbEffectsList = new();
         static public List<PictureBox> myPbShipsList = new();
-
-        static public void MissClick(ref List<PictureBox> lpbs, MouseEventArgs mouse)
-        {
-            lpbs.Add(new PictureBox());
-            lpbs.Last().Left = ((mouse.X - 850) / 50) * 50 + 851;
-            lpbs.Last().Top = ((mouse.Y - 300) / 50) * 50 + 301;
-            lpbs.Last().Width = 48;
-            lpbs.Last().Height = 48;
-            lpbs.Last().Image = new Bitmap(@"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\Practica\ButtleShip\pictures\splash.png");
-            lpbs.Last().SizeMode = PictureBoxSizeMode.Normal;
-        }
-
-        static public void HitClick(ref List<PictureBox> lpbs, MouseEventArgs mouse)
-        {
-            lpbs.Add(new PictureBox());
-            lpbs.Last().Left = ((mouse.X - 850) / 50) * 50 + 851;
-            lpbs.Last().Top = ((mouse.Y - 300) / 50) * 50 + 301;
-            lpbs.Last().Width = 48;
-            lpbs.Last().Height = 48;
-            lpbs.Last().Image = new Bitmap(@"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\Practica\ButtleShip\pictures\boom.png");
-            lpbs.Last().SizeMode = PictureBoxSizeMode.Normal;
-            
-
-        }
 
         static public void ArrandeTheShip()
         {

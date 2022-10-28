@@ -48,8 +48,8 @@ namespace ButtleShip
         {
             if (mouse.X >= 850 && mouse.X <= 1350 && mouse.Y >= 300 && mouse.Y <= 800)
             {
-                Images.MissClick(ref Images.pbEffectsList, mouse);
-                Controls.Add(Images.pbEffectsList.Last());
+                Effects.ClickEffect(out PictureBox miss, mouse, "splash");
+                Controls.Add(miss);
             }
         }
 
@@ -58,14 +58,14 @@ namespace ButtleShip
             rbGuest.Visible = true;
             rbHost.Visible = true;
 
-            if (Images.myPbShipsList.Count > 0)
-                for (int i = 0; i < Images.myPbShipsList.Count; i++)
-                    Controls.Remove(Images.myPbShipsList[i]);
+            if (Ships.myPbShipsList.Count > 0)
+                for (int i = 0; i < Ships.myPbShipsList.Count; i++)
+                    Controls.Remove(Ships.myPbShipsList[i]);
 
-            Images.ArrandeTheShip();
+            Ships.ArrandeTheShip();
 
-            for (int i = 0; i < Images.myPbShipsList.Count; i++)
-                Controls.Add(Images.myPbShipsList[i]);
+            for (int i = 0; i < Ships.myPbShipsList.Count; i++)
+                Controls.Add(Ships.myPbShipsList[i]);
         }
 
         private void rbHost_CheckedChanged(object sender, EventArgs e) => btConnect.Visible = true;
