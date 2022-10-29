@@ -48,23 +48,44 @@ namespace ButtleShip
         {
             if (mouse.X >= 850 && mouse.X <= 1350 && mouse.Y >= 300 && mouse.Y <= 800)
             {
-                Effects.ClickEffect(out PictureBox miss, mouse, "splash");
-                Controls.Add(miss);
+                byte column = (byte)((mouse.X - 850) / 50 + 1);
+                byte row = (byte)((mouse.Y - 300) / 50 + 1);
+
+                if (Cells.enemyFieldCondition[row,column] == 1)
+                {
+                    Effects.ClickEffect(out PictureBox miss, mouse, "boom");
+                    Controls.Add(miss);
+                    Cells.enemyFieldCondition[row, column] = 3;
+                }
+                else
+                {
+                    Effects.ClickEffect(out PictureBox miss, mouse, "splash");
+                    Controls.Add(miss);
+                    Cells.enemyFieldCondition[row, column] = 2;
+                }
+
+                if (Cells.enemyFieldCondition[row - 1, column] != 1 && Cells.enemyFieldCondition[row, column + 1] != 1 && 
+                    Cells.enemyFieldCondition[row + 1, column] != 1 && Cells.enemyFieldCondition[row, column-1] != 1) 
+                {
+
+                }
+
+                
             }
         }
-
+        
         private void btArrangeTheShips_Click(object sender, EventArgs e)
         {
             rbGuest.Visible = true;
             rbHost.Visible = true;
 
             if (Ships.myPbShipsList.Count > 0)
-                for (int i = 0; i < Ships.myPbShipsList.Count; i++)
+                for (byte i = 0; i < Ships.myPbShipsList.Count; i++)
                     Controls.Remove(Ships.myPbShipsList[i]);
 
             Ships.ArrandeTheShip();
 
-            for (int i = 0; i < Ships.myPbShipsList.Count; i++)
+            for (byte i = 0; i < Ships.myPbShipsList.Count; i++)
                 Controls.Add(Ships.myPbShipsList[i]);
         }
 

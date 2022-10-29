@@ -6,29 +6,30 @@ namespace ButtleShip
 {
     internal class Ships
     {
+        static public byte ship4Counter = 1;
+        static public byte ship3Counter = 2;
+        static public byte ship2Counter = 3;
+        static public byte ship1Counter = 4;
         static public List<PictureBox> myPbShipsList = new();
 
         static public void ArrandeTheShip()
         {
             myPbShipsList.Clear();
 
-            for (int i = 1; i < 11; i++)
-                for (int j = 1; j  < 11; j ++)
-                {
-                    Cells.enemyFieldCondition[i, j] = 0;
+            for (byte i = 1; i < 11; i++)
+                for (byte j = 1; j  < 11; j ++)
                     Cells.myFieldCondition[i,j] = 0;
-                }
 
             Random random = new();
-            int row, column, direction, right, bottom;
+            byte row, column, direction, right, bottom;
             bool isError;
 
-            for (int i = 4; i>0; i--)
-                for (int j = 0; j < 5-i; j++)
+            for (byte i = 4; i>0; i--)
+                for (byte j = 0; j < 5-i; j++)
                 {
-                    row = random.Next(1, 11);
-                    column = random.Next(1, 11);
-                    direction = random.Next(2);
+                    row = (byte)random.Next(1, 11);
+                    column = (byte)random.Next(1, 11);
+                    direction = (byte)random.Next(2);
 
                     if (direction == 0)
                     {
@@ -37,8 +38,8 @@ namespace ButtleShip
                             j--;
                             continue;
                         }
-                        right = column + i;
-                        bottom = row + 1;
+                        right = (byte)(column + i);
+                        bottom = (byte)(row + 1);
                     }
                     else
                     {
@@ -47,14 +48,14 @@ namespace ButtleShip
                             j--;
                             continue;
                         }
-                        bottom = row + i;
-                        right = column + 1;
+                        bottom = (byte)(row + i);
+                        right = (byte)(column + 1);
                     }
 
                     isError = false;
 
-                    for (int y = row - 1; y <= bottom; y++)
-                        for (int u = column - 1; u <= right; u++)
+                    for (byte y = (byte)(row - 1); y <= bottom; y++)
+                        for (byte u = (byte)(column - 1); u <= right; u++)
                             if (Cells.myFieldCondition[y,u] != 0)
                             {
                                 isError = true;
@@ -65,8 +66,8 @@ namespace ButtleShip
 
                     if (!isError)
                     {
-                        for (int y = row; y < bottom; y++)
-                            for (int u = column; u < right; u++)
+                        for (byte y = row; y < bottom; y++)
+                            for (byte u = column; u < right; u++)
                                 Cells.myFieldCondition[y, u] = 1;
 
                         DrawMyShips(i, direction, row, column, ref myPbShipsList);
@@ -74,7 +75,7 @@ namespace ButtleShip
                 }
         }
 
-        static private void DrawMyShips(in int i, in int direction, in int row, in int column, ref List<PictureBox> myPbShipsList)
+        static private void DrawMyShips(in byte i, in byte direction, in byte row, in byte column, ref List<PictureBox> myPbShipsList)
         {
             if (direction == 0)
             {
@@ -100,14 +101,14 @@ namespace ButtleShip
             }
         }
 
-        static private void AddShipInList(in List<PictureBox> myShipsList, in int row, in int column, int width, int height, string name)
+        static private void AddShipInList(in List<PictureBox> myShipsList, in byte row, in byte column, byte width, byte height, string name)
         {
             myShipsList.Add(new PictureBox());
             myShipsList.Last().Left = (column - 1) * 50 + 281;
             myShipsList.Last().Top = (row - 1) * 50 + 301;
             myShipsList.Last().Height = height;
             myShipsList.Last().Width = width;
-            myShipsList.Last().Image = new Bitmap(@"C:\Users\DmitriiKarp\Desktop\MGU\5_semestr\OpSist\Practica\ButtleShip\pictures\" + name);
+            myShipsList.Last().Image = new Bitmap(@"..\..\..\pictures\" + name);
             myShipsList.Last().SizeMode = PictureBoxSizeMode.Normal;
         }
 
