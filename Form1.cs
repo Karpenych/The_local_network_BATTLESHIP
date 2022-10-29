@@ -46,31 +46,75 @@ namespace ButtleShip
 
         private void Form1_MouseUp(object sender, MouseEventArgs mouse)
         {
-            if (mouse.X >= 850 && mouse.X <= 1350 && mouse.Y >= 300 && mouse.Y <= 800)
+            if (mouse.X >= 850 && mouse.X <= 1350 && mouse.Y >= 300 && mouse.Y <= 800)          // ONLY ENEMY FIELD CLICK_LISTENER
             {
                 byte column = (byte)((mouse.X - 850) / 50 + 1);
                 byte row = (byte)((mouse.Y - 300) / 50 + 1);
+                byte bottom, right;
+                bool isVertical = false;
+                byte shipLength = 1;
 
-                if (Cells.enemyFieldCondition[row,column] == 1)
+                if (Cells.enemyFieldCondition[row,column] == 1)      // IF SHIP
                 {
                     Effects.ClickEffect(out PictureBox miss, mouse, "boom");
                     Controls.Add(miss);
                     Cells.enemyFieldCondition[row, column] = 3;
                 }
-                else
+                else                                               // IF EMPTY
                 {
                     Effects.ClickEffect(out PictureBox miss, mouse, "splash");
                     Controls.Add(miss);
                     Cells.enemyFieldCondition[row, column] = 2;
                 }
 
-                if (Cells.enemyFieldCondition[row - 1, column] != 1 && Cells.enemyFieldCondition[row, column + 1] != 1 && 
-                    Cells.enemyFieldCondition[row + 1, column] != 1 && Cells.enemyFieldCondition[row, column-1] != 1) 
+                if (Cells.enemyFieldCondition[row - 1, column] != 1 && Cells.enemyFieldCondition[row, column + 1] != 1 &&    // SPLASHS AROUNG DEAD SHIP (NEED CORRECTION)
+                    Cells.enemyFieldCondition[row + 1, column] != 1 && Cells.enemyFieldCondition[row, column-1] != 1 &&
+                    Cells.enemyFieldCondition[row, column] == 3) 
                 {
+                    for (byte i = 0; i < 4; i++)          // SET ROW AND COLUMN TOP_LEFT_ANGLE VALUES. SET DIRECTION
+                    {
+                        if (Cells.enemyFieldCondition[row - 1, column] == 3) { row--; isVertical = true; }
+                        if (Cells.enemyFieldCondition[row, column - 1] == 3) { column--; isVertical = false; }
+                        if (Cells.enemyFieldCondition[row + 1, column] == 3) isVertical = true;
+                        if (Cells.enemyFieldCondition[row, column + 1] == 3) isVertical = false;
+                    }
 
-                }
+                    if (isVertical)     // FIND BOTTOM AND RIGHT FOR VERTICAL SHIP
+                    {
+                        for (byte i = 0; i < 4; i++) 
+                            if (Cells.enemyFieldCondition[row + shipLength, column] == 3)
+                                shipLength++;
 
-                
+                        bottom = (byte)(row + shipLength);
+                        right = (byte)(column + 1);
+                    }
+                    else               // FIND BOTTOM AND RIGHT FOR HORIZONTAL SHIP
+                    {
+                        for (byte i = 0; i < 4; i++)
+                            if (Cells.enemyFieldCondition[row, column + shipLength] == 3)
+                                shipLength++;
+
+                        bottom = (byte)(row + 1);
+                        right = (byte)(column + shipLength);
+                    }
+
+                    for (byte angleRow = (byte)(row - 1); angleRow <= bottom; angleRow++)
+                        for (byte angleColumn = (byte)(column - 1); angleColumn <= right; angleColumn++)
+                            if (angleRow > 0 && angleRow < 11 && angleColumn > 0 && angleColumn < 11 && Cells.enemyFieldCondition[angleRow, angleColumn] == 0)
+                            {
+                                PictureBox miss = new()
+                                {
+                                    Left = (angleColumn - 1) * 50 + 851,
+                                    Top = (angleRow - 1) * 50 + 301,
+                                    Width = 48,
+                                    Height = 48,
+                                    Image = new Bitmap(@"..\..\..\pictures\splash.png"),
+                                    SizeMode = PictureBoxSizeMode.Normal
+                                };
+                                Controls.Add(miss);
+                                Cells.enemyFieldCondition[row, column] = 2;
+                            }
+                }  
             }
         }
         
