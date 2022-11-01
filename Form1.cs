@@ -1,13 +1,14 @@
 using System.Net.Sockets;
 using System.Net;
-using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace ButtleShip
 {
     public partial class Form1 : Form
     {
-        public readonly Socket Socket1 = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        public Socket? Socket2;
+        public Socket listenSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        public Socket handlerSocket;
+        public byte[] data = new byte[10];
 
         public Form1()
         {
@@ -50,11 +51,10 @@ namespace ButtleShip
             {
                 byte column = (byte)((mouse.X - 850) / 50 + 1);
                 byte row = (byte)((mouse.Y - 300) / 50 + 1);
-                byte bottom, right;
-                bool isVertical = false;
-                byte shipLength = 1;
-
-                if (Cells.enemyFieldCondition[row,column] == 1)      // IF SHIP
+                byte bottom, right, shipLength = 1;
+                bool isVertical = false, isError = false;
+                
+                if (Cells.enemyFieldCondition[row, column] == 1)      // IF SHIP
                 {
                     Effects.ClickEffect(out PictureBox miss, mouse, "boom");
                     Controls.Add(miss);
@@ -67,24 +67,26 @@ namespace ButtleShip
                     Cells.enemyFieldCondition[row, column] = 2;
                 }
 
-                if (Cells.enemyFieldCondition[row - 1, column] != 1 && Cells.enemyFieldCondition[row, column + 1] != 1 &&    // SPLASHS AROUNG DEAD SHIP (NEED CORRECTION)
-                    Cells.enemyFieldCondition[row + 1, column] != 1 && Cells.enemyFieldCondition[row, column-1] != 1 &&
-                    Cells.enemyFieldCondition[row, column] == 3) 
+                if (Cells.enemyFieldCondition[row - 1, column] != 1 && Cells.enemyFieldCondition[row, column + 1] != 1 &&    // SPLASHS AROUNG DEAD SHIP
+                    Cells.enemyFieldCondition[row + 1, column] != 1 && Cells.enemyFieldCondition[row, column - 1] != 1 &&
+                    Cells.enemyFieldCondition[row, column] == 3)
                 {
                     for (byte i = 0; i < 4; i++)          // SET ROW AND COLUMN TOP_LEFT_ANGLE VALUES. SET DIRECTION
                     {
-                        if (Cells.enemyFieldCondition[row - 1, column] == 3) { row--; isVertical = true; }
-                        if (Cells.enemyFieldCondition[row, column - 1] == 3) { column--; isVertical = false; }
-                        if (Cells.enemyFieldCondition[row + 1, column] == 3) isVertical = true;
-                        if (Cells.enemyFieldCondition[row, column + 1] == 3) isVertical = false;
+                        if (Cells.enemyFieldCondition[row - 1, column] == 3) row--;
+                        if (Cells.enemyFieldCondition[row, column - 1] == 3) column--; 
                     }
+                    if (Cells.enemyFieldCondition[row + 1, column] == 3) isVertical = true;
+                    if (Cells.enemyFieldCondition[row, column + 1] == 3) isVertical = false;
 
                     if (isVertical)     // FIND BOTTOM AND RIGHT FOR VERTICAL SHIP
                     {
-                        for (byte i = 0; i < 4; i++) 
+                        for (byte i = 0; i < 4; i++)
                             if (Cells.enemyFieldCondition[row + shipLength, column] == 3)
                                 shipLength++;
 
+                        if (Cells.enemyFieldCondition[row + shipLength, column] == 1 || Cells.enemyFieldCondition[row - 1, column] == 1) isError = true;
+                       
                         bottom = (byte)(row + shipLength);
                         right = (byte)(column + 1);
                     }
@@ -94,34 +96,37 @@ namespace ButtleShip
                             if (Cells.enemyFieldCondition[row, column + shipLength] == 3)
                                 shipLength++;
 
+                        if (Cells.enemyFieldCondition[row, column + shipLength] == 1 || Cells.enemyFieldCondition[row, column - 1] == 1) isError = true;
+
                         bottom = (byte)(row + 1);
                         right = (byte)(column + shipLength);
                     }
 
-                    for (byte angleRow = (byte)(row - 1); angleRow <= bottom; angleRow++)
-                        for (byte angleColumn = (byte)(column - 1); angleColumn <= right; angleColumn++)
-                            if (angleRow > 0 && angleRow < 11 && angleColumn > 0 && angleColumn < 11 && Cells.enemyFieldCondition[angleRow, angleColumn] == 0)
-                            {
-                                PictureBox miss = new()
+                    if (!isError)
+                        for (byte angleRow = (byte)(row - 1); angleRow <= bottom; angleRow++)
+                            for (byte angleColumn = (byte)(column - 1); angleColumn <= right; angleColumn++)
+                                if (angleRow > 0 && angleRow < 11 && angleColumn > 0 && angleColumn < 11 && Cells.enemyFieldCondition[angleRow, angleColumn] == 0)
                                 {
-                                    Left = (angleColumn - 1) * 50 + 851,
-                                    Top = (angleRow - 1) * 50 + 301,
-                                    Width = 48,
-                                    Height = 48,
-                                    Image = new Bitmap(@"..\..\..\pictures\splash.png"),
-                                    SizeMode = PictureBoxSizeMode.Normal
-                                };
-                                Controls.Add(miss);
-                                Cells.enemyFieldCondition[row, column] = 2;
-                            }
-                }  
+                                    PictureBox miss = new()
+                                    {
+                                        Left = (angleColumn - 1) * 50 + 851,
+                                        Top = (angleRow - 1) * 50 + 301,
+                                        Width = 48,
+                                        Height = 48,
+                                        Image = new Bitmap(@"..\..\..\pictures\splash.png"),
+                                        SizeMode = PictureBoxSizeMode.Normal
+                                    };
+                                    Controls.Add(miss);
+                                    Cells.enemyFieldCondition[row, column] = 2;
+                                }
+                }
             }
         }
         
         private void btArrangeTheShips_Click(object sender, EventArgs e)
         {
             rbGuest.Visible = true;
-            rbHost.Visible = true;
+            rbServer.Visible = true;
 
             if (Ships.myPbShipsList.Count > 0)
                 for (byte i = 0; i < Ships.myPbShipsList.Count; i++)
@@ -139,16 +144,32 @@ namespace ButtleShip
 
         private void btConnect_Click(object sender, EventArgs e)
         {
-            if (rbHost.Checked == true)
+            btArrangeTheShips.Enabled = false;
+
+            if (rbServer.Checked == true)
             {
-                Socket1.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5064));
-                Socket1.Listen(10);
-                Socket2 = Socket1.Accept();
+                rbGuest.Enabled = false;
+                rbServer.Enabled = false;
+                btConnect.Enabled = false;
+
+                listenSocket.Bind(new IPEndPoint(IPAddress.Loopback, 5064));
+                listenSocket.Listen(1);
+                handlerSocket = listenSocket.Accept();
             }
             else
             {
-                try { Socket1.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5064)); }
-                catch { MessageBox.Show("Сервер не отвечает"); }
+                try 
+                {
+                    listenSocket.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5064));
+
+                    rbGuest.Enabled = false;
+                    rbServer.Enabled = false;
+                    btConnect.Enabled = false;
+                }
+                catch { MessageBox.Show("Server no respond"); return; }
+
+                int bytesAmount = listenSocket.Receive(data);
+                MessageBox.Show(Encoding.Unicode.GetString(data, 0, bytesAmount));
             }
         }
 

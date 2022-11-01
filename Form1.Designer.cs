@@ -75,7 +75,7 @@
             this.label40 = new System.Windows.Forms.Label();
             this.btArrangeTheShips = new System.Windows.Forms.Button();
             this.btConnect = new System.Windows.Forms.Button();
-            this.rbHost = new System.Windows.Forms.RadioButton();
+            this.rbServer = new System.Windows.Forms.RadioButton();
             this.rbGuest = new System.Windows.Forms.RadioButton();
             this.pbMyShip4 = new System.Windows.Forms.PictureBox();
             this.pbMyShip3 = new System.Windows.Forms.PictureBox();
@@ -618,21 +618,21 @@
             this.btConnect.Visible = false;
             this.btConnect.Click += new System.EventHandler(this.btConnect_Click);
             // 
-            // rbHost
+            // rbServer
             // 
-            this.rbHost.AutoSize = true;
-            this.rbHost.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rbHost.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.rbHost.ForeColor = System.Drawing.Color.Navy;
-            this.rbHost.Location = new System.Drawing.Point(23, 82);
-            this.rbHost.Name = "rbHost";
-            this.rbHost.Size = new System.Drawing.Size(103, 32);
-            this.rbHost.TabIndex = 48;
-            this.rbHost.TabStop = true;
-            this.rbHost.Text = "I\'m host";
-            this.rbHost.UseVisualStyleBackColor = true;
-            this.rbHost.Visible = false;
-            this.rbHost.CheckedChanged += new System.EventHandler(this.rbHost_CheckedChanged);
+            this.rbServer.AutoSize = true;
+            this.rbServer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.rbServer.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rbServer.ForeColor = System.Drawing.Color.Navy;
+            this.rbServer.Location = new System.Drawing.Point(23, 82);
+            this.rbServer.Name = "rbServer";
+            this.rbServer.Size = new System.Drawing.Size(103, 32);
+            this.rbServer.TabIndex = 48;
+            this.rbServer.TabStop = true;
+            this.rbServer.Text = "I\'m host";
+            this.rbServer.UseVisualStyleBackColor = true;
+            this.rbServer.Visible = false;
+            this.rbServer.CheckedChanged += new System.EventHandler(this.rbHost_CheckedChanged);
             // 
             // rbGuest
             // 
@@ -833,7 +833,7 @@
             this.Controls.Add(this.pbMyShip3);
             this.Controls.Add(this.pbMyShip4);
             this.Controls.Add(this.rbGuest);
-            this.Controls.Add(this.rbHost);
+            this.Controls.Add(this.rbServer);
             this.Controls.Add(this.btConnect);
             this.Controls.Add(this.btArrangeTheShips);
             this.Controls.Add(this.label31);
@@ -952,7 +952,7 @@
         private Label label40;
         private Button btArrangeTheShips;
         private Button btConnect;
-        private RadioButton rbHost;
+        private RadioButton rbServer;
         private RadioButton rbGuest;
         private PictureBox pbMyShip4;
         private PictureBox pbMyShip3;
