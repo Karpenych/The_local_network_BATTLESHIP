@@ -13,7 +13,6 @@ namespace ButtleShip
         Socket socketGuest;
         byte[] data = new byte[10];
 
-
         public Form1()
         {
             InitializeComponent();
@@ -24,7 +23,6 @@ namespace ButtleShip
             DrawField(280);
             DrawField(850);
         }
-
 
         private void DrawField(int margin)
         {
@@ -79,6 +77,10 @@ namespace ButtleShip
                             Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
                             Controls.Add(effect);
                             Cells.enemyFieldCondition[row, column] = 3;
+
+                            Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
+                            for (byte i = 0; i < border.Count; i++)
+                                Controls.Add(border[i]);
 
                             // Click again
                         }
@@ -164,6 +166,10 @@ namespace ButtleShip
                     effect.BringToFront();
                     
                     Cells.myFieldCondition[row, column] = 3;
+
+                    Effects.SplashBorderMy(out List<PictureBox> border, row, column);
+                    for (byte i = 0; i < border.Count; i++)
+                        Controls.Add(border[i]);
 
                     data = Encoding.Unicode.GetBytes("1");
                     socket.Send(data);
