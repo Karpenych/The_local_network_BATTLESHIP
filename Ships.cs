@@ -6,10 +6,10 @@ namespace ButtleShip
 {
     internal class Ships
     {
-        static public byte ship4Counter = 1;
-        static public byte ship3Counter = 2;
-        static public byte ship2Counter = 3;
-        static public byte ship1Counter = 4;
+        static public byte myShip4Counter = 1, enemyShip4Counter = 1,
+                           myShip3Counter = 2, enemyShip3Counter = 2,
+                           myShip2Counter = 3, enemyShip2Counter = 3,
+                           myShip1Counter = 4, enemyShip1Counter = 4;
         static public List<PictureBox> myPbShipsList = new();
 
         static public void ArrandeTheShip()
@@ -70,12 +70,12 @@ namespace ButtleShip
                             for (byte u = column; u < right; u++)
                                 Cells.myFieldCondition[y, u] = 1;
 
-                        DrawMyShips(i, direction, row, column, ref myPbShipsList);
+                        DrawMyShips(i, direction, row, column, myPbShipsList);
                     }
                 }
         }
 
-        static private void DrawMyShips(in byte i, in byte direction, in byte row, in byte column, ref List<PictureBox> myPbShipsList)
+        static private void DrawMyShips(in byte i, in byte direction, in byte row, in byte column, in List<PictureBox> myPbShipsList)
         {
             if (direction == 0)
             {
@@ -103,13 +103,16 @@ namespace ButtleShip
 
         static private void AddShipInList(in List<PictureBox> myShipsList, in byte row, in byte column, byte width, byte height, string name)
         {
-            myShipsList.Add(new PictureBox());
-            myShipsList.Last().Left = (column - 1) * 50 + 281;
-            myShipsList.Last().Top = (row - 1) * 50 + 301;
-            myShipsList.Last().Height = height;
-            myShipsList.Last().Width = width;
-            myShipsList.Last().Image = new Bitmap(@"..\..\..\pictures\" + name);
-            myShipsList.Last().SizeMode = PictureBoxSizeMode.Normal;
+            myShipsList.Add(new PictureBox()
+            {
+                Left = (column - 1) * 50 + 281,
+                Top = (row - 1) * 50 + 301,
+                Height = height,
+                Width = width,
+                Image = new Bitmap(@"..\..\..\pictures\" + name),
+                SizeMode = PictureBoxSizeMode.Normal,
+                BackColor = Color.Transparent
+            });
         }
 
     }

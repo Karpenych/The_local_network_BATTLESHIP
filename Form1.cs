@@ -1,14 +1,18 @@
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using System.Windows.Forms;
+using System.Data.Common;
+using System;
 
 namespace ButtleShip
 {
     public partial class Form1 : Form
     {
-        public Socket listenSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        public Socket handlerSocket;
-        public byte[] data = new byte[10];
+        Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        Socket socketGuest;
+        byte[] data = new byte[10];
+
 
         public Form1()
         {
@@ -20,6 +24,7 @@ namespace ButtleShip
             DrawField(280);
             DrawField(850);
         }
+
 
         private void DrawField(int margin)
         {
@@ -51,74 +56,42 @@ namespace ButtleShip
             {
                 byte column = (byte)((mouse.X - 850) / 50 + 1);
                 byte row = (byte)((mouse.Y - 300) / 50 + 1);
-                byte bottom, right, shipLength = 1;
-                bool isVertical = false, isError = false;
                 
-                if (Cells.enemyFieldCondition[row, column] == 1)      // IF SHIP
+                if (rbServer.Checked)
                 {
-                    Effects.ClickEffect(out PictureBox miss, mouse, "boom");
-                    Controls.Add(miss);
-                    Cells.enemyFieldCondition[row, column] = 3;
+                    if (Cells.enemyFieldCondition[row, column] != 2 && Cells.enemyFieldCondition[row, column] != 3)
+                    {
+                        data = Encoding.Unicode.GetBytes($"{row},{column}");
+                        socketGuest.Send(data);
+
+                        int bytes = socketGuest.Receive(data);
+
+                        if (Encoding.Unicode.GetString(data, 0, bytes) == "0")
+                        {
+                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "splash");
+                            Controls.Add(effect);
+                            Cells.enemyFieldCondition[row, column] = 2;
+
+                            // Ход переходит у гостю
+                        }
+                        else
+                        {
+                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
+                            Controls.Add(effect);
+                            Cells.enemyFieldCondition[row, column] = 3;
+
+                            // Click again
+                        }
+                    } 
                 }
-                else                                               // IF EMPTY
+                else
                 {
-                    Effects.ClickEffect(out PictureBox miss, mouse, "splash");
-                    Controls.Add(miss);
-                    Cells.enemyFieldCondition[row, column] = 2;
-                }
+                    data = new byte[10];
+                    data = Encoding.Unicode.GetBytes($"{row},{column}");
+                    socket.Send(data);
 
-                if (Cells.enemyFieldCondition[row - 1, column] != 1 && Cells.enemyFieldCondition[row, column + 1] != 1 &&    // SPLASHS AROUNG DEAD SHIP
-                    Cells.enemyFieldCondition[row + 1, column] != 1 && Cells.enemyFieldCondition[row, column - 1] != 1 &&
-                    Cells.enemyFieldCondition[row, column] == 3)
-                {
-                    for (byte i = 0; i < 4; i++)          // SET ROW AND COLUMN TOP_LEFT_ANGLE VALUES. SET DIRECTION
-                    {
-                        if (Cells.enemyFieldCondition[row - 1, column] == 3) row--;
-                        if (Cells.enemyFieldCondition[row, column - 1] == 3) column--; 
-                    }
-                    if (Cells.enemyFieldCondition[row + 1, column] == 3) isVertical = true;
-                    if (Cells.enemyFieldCondition[row, column + 1] == 3) isVertical = false;
-
-                    if (isVertical)     // FIND BOTTOM AND RIGHT FOR VERTICAL SHIP
-                    {
-                        for (byte i = 0; i < 4; i++)
-                            if (Cells.enemyFieldCondition[row + shipLength, column] == 3)
-                                shipLength++;
-
-                        if (Cells.enemyFieldCondition[row + shipLength, column] == 1 || Cells.enemyFieldCondition[row - 1, column] == 1) isError = true;
-                       
-                        bottom = (byte)(row + shipLength);
-                        right = (byte)(column + 1);
-                    }
-                    else               // FIND BOTTOM AND RIGHT FOR HORIZONTAL SHIP
-                    {
-                        for (byte i = 0; i < 4; i++)
-                            if (Cells.enemyFieldCondition[row, column + shipLength] == 3)
-                                shipLength++;
-
-                        if (Cells.enemyFieldCondition[row, column + shipLength] == 1 || Cells.enemyFieldCondition[row, column - 1] == 1) isError = true;
-
-                        bottom = (byte)(row + 1);
-                        right = (byte)(column + shipLength);
-                    }
-
-                    if (!isError)
-                        for (byte angleRow = (byte)(row - 1); angleRow <= bottom; angleRow++)
-                            for (byte angleColumn = (byte)(column - 1); angleColumn <= right; angleColumn++)
-                                if (angleRow > 0 && angleRow < 11 && angleColumn > 0 && angleColumn < 11 && Cells.enemyFieldCondition[angleRow, angleColumn] == 0)
-                                {
-                                    PictureBox miss = new()
-                                    {
-                                        Left = (angleColumn - 1) * 50 + 851,
-                                        Top = (angleRow - 1) * 50 + 301,
-                                        Width = 48,
-                                        Height = 48,
-                                        Image = new Bitmap(@"..\..\..\pictures\splash.png"),
-                                        SizeMode = PictureBoxSizeMode.Normal
-                                    };
-                                    Controls.Add(miss);
-                                    Cells.enemyFieldCondition[row, column] = 2;
-                                }
+                    int bytes = socket.Receive(data);
+                    MessageBox.Show(Encoding.Unicode.GetString(data, 0, bytes));
                 }
             }
         }
@@ -152,15 +125,16 @@ namespace ButtleShip
                 rbServer.Enabled = false;
                 btConnect.Enabled = false;
 
-                listenSocket.Bind(new IPEndPoint(IPAddress.Loopback, 5064));
-                listenSocket.Listen(1);
-                handlerSocket = listenSocket.Accept();
+                socket.Bind(new IPEndPoint(IPAddress.Loopback, 5064));
+                socket.Listen(1);
+                socketGuest = socket.Accept();
             }
             else
             {
                 try 
                 {
-                    listenSocket.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5064));
+                    string serverIP = "127.0.0.1";
+                    socket.Connect(new IPEndPoint(IPAddress.Parse(serverIP), 5064));
 
                     rbGuest.Enabled = false;
                     rbServer.Enabled = false;
@@ -168,8 +142,32 @@ namespace ButtleShip
                 }
                 catch { MessageBox.Show("Server no respond"); return; }
 
-                int bytesAmount = listenSocket.Receive(data);
-                MessageBox.Show(Encoding.Unicode.GetString(data, 0, bytesAmount));
+                int bytes = socket.Receive(data);
+                string[] row_col = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
+                byte row = byte.Parse(row_col[0]);
+                byte column = byte.Parse(row_col[1]);
+
+                if (Cells.myFieldCondition[row, column] == 0)
+                {
+                    Effects.AddMyFieldEffect(out PictureBox effect, row, column, "splash");
+                    Controls.Add(effect);
+
+                    Cells.myFieldCondition[row, column] = 2;
+
+                    data = Encoding.Unicode.GetBytes("0");
+                    socket.Send(data);
+                }
+                else
+                {
+                    Effects.AddMyFieldEffect(out PictureBox effect, row, column, "boom");
+                    Controls.Add(effect);
+                    effect.BringToFront();
+                    
+                    Cells.myFieldCondition[row, column] = 3;
+
+                    data = Encoding.Unicode.GetBytes("1");
+                    socket.Send(data);
+                }
             }
         }
 
