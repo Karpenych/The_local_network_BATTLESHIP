@@ -54,46 +54,129 @@ namespace ButtleShip
             {
                 byte column = (byte)((mouse.X - 850) / 50 + 1);
                 byte row = (byte)((mouse.Y - 300) / 50 + 1);
-                
-                if (rbServer.Checked)
+               
+                if (Cells.enemyFieldCondition[row, column] != 2 && Cells.enemyFieldCondition[row, column] != 3)
                 {
-                    if (Cells.enemyFieldCondition[row, column] != 2 && Cells.enemyFieldCondition[row, column] != 3)
+                    if (rbServer.Checked)
                     {
+                        data = new byte[10];
                         data = Encoding.Unicode.GetBytes($"{row},{column}");
                         socketGuest.Send(data);
-
+                        data = new byte[10];
                         int bytes = socketGuest.Receive(data);
 
-                        if (Encoding.Unicode.GetString(data, 0, bytes) == "0")
+                        if (Encoding.Unicode.GetString(data, 0, bytes) == "0") // if SPLASH
                         {
                             Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "splash");
                             Controls.Add(effect);
                             Cells.enemyFieldCondition[row, column] = 2;
 
-                            // Ход переходит у гостю
+                            while (true)
+                            {
+                                data = new byte[10];
+                                int _bytes = socketGuest.Receive(data);
+                                string[] _row_col = Encoding.Unicode.GetString(data, 0, _bytes).Split(',');
+                                byte _row = byte.Parse(_row_col[0]);
+                                byte _column = byte.Parse(_row_col[1]);
+
+                                if (Cells.myFieldCondition[_row, _column] == 0)  // if enemy splash
+                                {
+                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "splash");
+                                    Controls.Add(_effect);
+
+                                    Cells.myFieldCondition[_row, _column] = 2;
+
+                                    data = new byte[10];
+                                    data = Encoding.Unicode.GetBytes("0");
+                                    socketGuest.Send(data);
+
+                                    break;
+                                }
+                                else  // if enemy boom
+                                {
+                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "boom");
+                                    Controls.Add(_effect);
+                                    _effect.BringToFront();
+
+                                    Cells.myFieldCondition[_row, _column] = 3;
+
+                                    Effects.SplashBorderMy(out List<PictureBox> _border, _row, _column);
+                                    for (byte i = 0; i < _border.Count; i++)
+                                        Controls.Add(_border[i]);
+
+                                    data = new byte[10];
+                                    data = Encoding.Unicode.GetBytes("1");
+                                    socketGuest.Send(data);
+                                }
+                            }     
                         }
-                        else
+                        else  // if BOOM
                         {
                             Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
                             Controls.Add(effect);
                             Cells.enemyFieldCondition[row, column] = 3;
-
-                            Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
-                            for (byte i = 0; i < border.Count; i++)
-                                Controls.Add(border[i]);
-
-                            // Click again
                         }
-                    } 
-                }
-                else
-                {
-                    data = new byte[10];
-                    data = Encoding.Unicode.GetBytes($"{row},{column}");
-                    socket.Send(data);
+                    }
+                    else // rbGuest checked
+                    {
+                        data = new byte[10];
+                        data = Encoding.Unicode.GetBytes($"{row},{column}");
+                        socket.Send(data);
+                        data = new byte[10];
+                        int bytes = socket.Receive(data);
 
-                    int bytes = socket.Receive(data);
-                    MessageBox.Show(Encoding.Unicode.GetString(data, 0, bytes));
+                        if (Encoding.Unicode.GetString(data, 0, bytes) == "0") // if SPLASH
+                        {
+                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "splash");
+                            Controls.Add(effect);
+                            Cells.enemyFieldCondition[row, column] = 2;
+
+                            while (true)
+                            {
+                                data = new byte[10];
+                                int _bytes = socket.Receive(data);
+                                string[] _row_col = Encoding.Unicode.GetString(data, 0, _bytes).Split(',');
+                                byte _row = byte.Parse(_row_col[0]);
+                                byte _column = byte.Parse(_row_col[1]);
+
+                                if (Cells.myFieldCondition[_row, _column] == 0)  // if enemy splash
+                                {
+                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "splash");
+                                    Controls.Add(_effect);
+
+                                    Cells.myFieldCondition[_row, _column] = 2;
+
+                                    data = new byte[10];   
+                                    data = Encoding.Unicode.GetBytes("0");
+                                    socket.Send(data);
+
+                                    break;
+                                }
+                                else  // if enemy boom
+                                {
+                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "boom");
+                                    Controls.Add(_effect);
+                                    _effect.BringToFront();
+
+                                    Cells.myFieldCondition[_row, _column] = 3;
+
+                                    Effects.SplashBorderMy(out List<PictureBox> _border, _row, _column);
+                                    for (byte i = 0; i < _border.Count; i++)
+                                        Controls.Add(_border[i]);
+
+                                    data = new byte[10];
+                                    data = Encoding.Unicode.GetBytes("1");
+                                    socket.Send(data);
+                                }
+                            }
+                        }
+                        else  // if BOOM
+                        {
+                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
+                            Controls.Add(effect);
+                            Cells.enemyFieldCondition[row, column] = 3;
+                        }
+                    }
                 }
             }
         }
@@ -115,7 +198,7 @@ namespace ButtleShip
 
         private void rbHost_CheckedChanged(object sender, EventArgs e) => btConnect.Visible = true;
 
-        private void rbGuest_CheckedChanged(object sender, EventArgs e) => btConnect.Visible = true; 
+        private void rbGuest_CheckedChanged(object sender, EventArgs e) { btConnect.Visible = true; tbServerIP.Visible = true;  }
 
         private void btConnect_Click(object sender, EventArgs e)
         {
@@ -135,44 +218,53 @@ namespace ButtleShip
             {
                 try 
                 {
-                    string serverIP = "127.0.0.1";
-                    socket.Connect(new IPEndPoint(IPAddress.Parse(serverIP), 5064));
+                    socket.Connect(new IPEndPoint(IPAddress.Parse(tbServerIP.Text), 5064));
 
                     rbGuest.Enabled = false;
                     rbServer.Enabled = false;
                     btConnect.Enabled = false;
+                    tbServerIP.Visible = false;
                 }
                 catch { MessageBox.Show("Server no respond"); return; }
 
-                int bytes = socket.Receive(data);
-                string[] row_col = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
-                byte row = byte.Parse(row_col[0]);
-                byte column = byte.Parse(row_col[1]);
 
-                if (Cells.myFieldCondition[row, column] == 0)
+                while (true)
                 {
-                    Effects.AddMyFieldEffect(out PictureBox effect, row, column, "splash");
-                    Controls.Add(effect);
+                    data = new byte[10];
+                    int bytes = socket.Receive(data);
+                    string[] row_col = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
+                    byte row = byte.Parse(row_col[0]);
+                    byte column = byte.Parse(row_col[1]);
 
-                    Cells.myFieldCondition[row, column] = 2;
+                    if (Cells.myFieldCondition[row, column] == 0)  // if enemy splash
+                    {
+                        Effects.AddMyFieldEffect(out PictureBox effect, row, column, "splash");
+                        Controls.Add(effect);
 
-                    data = Encoding.Unicode.GetBytes("0");
-                    socket.Send(data);
-                }
-                else
-                {
-                    Effects.AddMyFieldEffect(out PictureBox effect, row, column, "boom");
-                    Controls.Add(effect);
-                    effect.BringToFront();
-                    
-                    Cells.myFieldCondition[row, column] = 3;
+                        Cells.myFieldCondition[row, column] = 2;
 
-                    Effects.SplashBorderMy(out List<PictureBox> border, row, column);
-                    for (byte i = 0; i < border.Count; i++)
-                        Controls.Add(border[i]);
+                        data = new byte[10];
+                        data = Encoding.Unicode.GetBytes("0");
+                        socket.Send(data);
 
-                    data = Encoding.Unicode.GetBytes("1");
-                    socket.Send(data);
+                        break;
+                    }
+                    else // if enemy boom
+                    {
+                        Effects.AddMyFieldEffect(out PictureBox effect, row, column, "boom");
+                        Controls.Add(effect);
+                        effect.BringToFront();
+
+                        Cells.myFieldCondition[row, column] = 3;
+
+                        Effects.SplashBorderMy(out List<PictureBox> border, row, column);
+                        for (byte i = 0; i < border.Count; i++)
+                            Controls.Add(border[i]);
+
+                        data = new byte[10];
+                        data = Encoding.Unicode.GetBytes("1");
+                        socket.Send(data);
+                    }
                 }
             }
         }

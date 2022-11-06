@@ -93,6 +93,7 @@
             this.lbEnemyShip3Counter = new System.Windows.Forms.Label();
             this.lbEnemyShip2Counter = new System.Windows.Forms.Label();
             this.lbEnemyShip1Counter = new System.Windows.Forms.Label();
+            this.tbServerIP = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.Icon1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Icon2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMyShip4)).BeginInit();
@@ -626,10 +627,10 @@
             this.rbServer.ForeColor = System.Drawing.Color.Navy;
             this.rbServer.Location = new System.Drawing.Point(23, 82);
             this.rbServer.Name = "rbServer";
-            this.rbServer.Size = new System.Drawing.Size(103, 32);
+            this.rbServer.Size = new System.Drawing.Size(117, 32);
             this.rbServer.TabIndex = 48;
             this.rbServer.TabStop = true;
-            this.rbServer.Text = "I\'m host";
+            this.rbServer.Text = "I\'m server";
             this.rbServer.UseVisualStyleBackColor = true;
             this.rbServer.Visible = false;
             this.rbServer.CheckedChanged += new System.EventHandler(this.rbHost_CheckedChanged);
@@ -810,12 +811,25 @@
             this.lbEnemyShip1Counter.TabIndex = 65;
             this.lbEnemyShip1Counter.Text = "4";
             // 
+            // tbServerIP
+            // 
+            this.tbServerIP.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.tbServerIP.ForeColor = System.Drawing.Color.Navy;
+            this.tbServerIP.Location = new System.Drawing.Point(23, 161);
+            this.tbServerIP.Name = "tbServerIP";
+            this.tbServerIP.Size = new System.Drawing.Size(117, 25);
+            this.tbServerIP.TabIndex = 66;
+            this.tbServerIP.Text = "127.0.0.1";
+            this.tbServerIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tbServerIP.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(249)))), ((int)(((byte)(242)))));
             this.ClientSize = new System.Drawing.Size(1602, 873);
+            this.Controls.Add(this.tbServerIP);
             this.Controls.Add(this.lbEnemyShip1Counter);
             this.Controls.Add(this.lbEnemyShip2Counter);
             this.Controls.Add(this.lbEnemyShip3Counter);
@@ -970,5 +984,6 @@
         private Label lbEnemyShip3Counter;
         private Label lbEnemyShip2Counter;
         private Label lbEnemyShip1Counter;
+        private TextBox tbServerIP;
     }
 }

@@ -38,7 +38,7 @@ namespace ButtleShip
             };
         }
 
-        static public void SplashBorderEnemy(out List<PictureBox> splashBorder, byte row, byte column)
+        /*static public void SplashBorderEnemy(out List<PictureBox> splashBorder, byte row, byte column)
         {
             splashBorder = new();
             bool isVertical = false, isError = false;
@@ -93,11 +93,10 @@ namespace ButtleShip
                                     Image = new Bitmap(@"..\..\..\pictures\splash.png"),
                                     SizeMode = PictureBoxSizeMode.Normal
                                 });
-                                //Controls.Add(miss);
                                 Cells.enemyFieldCondition[row, column] = 2;
                             }
             }
-        }
+        }*/
 
         static public void SplashBorderMy(out List<PictureBox> splashBorder, byte row, byte column)
         {
