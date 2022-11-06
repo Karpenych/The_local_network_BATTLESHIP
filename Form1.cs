@@ -119,6 +119,12 @@ namespace ButtleShip
                                         data = new byte[10];
                                         data = Encoding.Unicode.GetBytes("1,1");
                                         socketGuest.Send(data);
+
+                                        if (Ships.myShipTotal == 0)
+                                        {
+                                            MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
+                                            Form1.ActiveForm.Close();
+                                        }
                                     }
                                     else
                                     {
@@ -143,6 +149,12 @@ namespace ButtleShip
                                 Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
                                 for (byte i = 0; i < border.Count; i++)
                                     Controls.Add(border[i]);
+
+                                if (Ships.enemyShipTotal == 0)
+                                {
+                                    MessageBox.Show("Dude, you win", "", MessageBoxButtons.OK);
+                                    Form1.ActiveForm.Close();
+                                }
                             }
                         }
                     }
@@ -198,6 +210,12 @@ namespace ButtleShip
                                         data = new byte[10];
                                         data = Encoding.Unicode.GetBytes("1,1");
                                         socket.Send(data);
+
+                                        if (Ships.myShipTotal == 0)
+                                        {
+                                            MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
+                                            Form1.ActiveForm.Close();
+                                        }
                                     }
                                     else
                                     {
@@ -222,6 +240,12 @@ namespace ButtleShip
                                 Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
                                 for (byte i = 0; i < border.Count; i++)
                                     Controls.Add(border[i]);
+
+                                if (Ships.enemyShipTotal == 0)
+                                {
+                                    MessageBox.Show("Dude, you win", "", MessageBoxButtons.OK);
+                                    Form1.ActiveForm.Close();
+                                }
                             }
                         }
                     }
@@ -314,6 +338,12 @@ namespace ButtleShip
                             data = new byte[10];
                             data = Encoding.Unicode.GetBytes("1,1");
                             socket.Send(data);
+
+                            if (Ships.myShipTotal == 0)
+                            {
+                                MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
+                                Form1.ActiveForm.Close();
+                            }
                         }
                         else 
                         {

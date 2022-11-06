@@ -6,8 +6,8 @@ namespace ButtleShip
 {
     internal class Ships
     {
-        static public byte myShip4Counter = 1, enemyShip4Counter = 1,
-                           myShip3Counter = 2, enemyShip3Counter = 2,
+        static public byte myShip4Counter = 1, enemyShip4Counter = 1, myShipTotal = 10,
+                           myShip3Counter = 2, enemyShip3Counter = 2, enemyShipTotal = 10,
                            myShip2Counter = 3, enemyShip2Counter = 3,
                            myShip1Counter = 4, enemyShip1Counter = 4;
         static public List<PictureBox> myPbShipsList = new();
@@ -134,6 +134,7 @@ namespace ButtleShip
                 default:
                     break;
             }
+            myShipTotal--;
         }
 
         static public void KillEnemyShip(byte shipLength)
@@ -155,6 +156,7 @@ namespace ButtleShip
                 default:
                     break;
             }
+            enemyShipTotal--;
         }
     }
 }
