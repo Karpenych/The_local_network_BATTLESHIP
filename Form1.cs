@@ -110,21 +110,40 @@ namespace ButtleShip
 
                                     Cells.myFieldCondition[_row, _column] = 3;
 
-                                    Effects.SplashBorderMy(out List<PictureBox> _border, _row, _column);
-                                    for (byte i = 0; i < _border.Count; i++)
-                                        Controls.Add(_border[i]);
+                                    Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
+                                    if (isShipDead)
+                                    {
+                                        for (byte i = 0; i < border.Count; i++)
+                                            Controls.Add(border[i]);
 
-                                    data = new byte[10];
-                                    data = Encoding.Unicode.GetBytes("1");
-                                    socketGuest.Send(data);
+                                        data = new byte[10];
+                                        data = Encoding.Unicode.GetBytes("1,1");
+                                        socketGuest.Send(data);
+                                    }
+                                    else
+                                    {
+                                        data = new byte[10];
+                                        data = Encoding.Unicode.GetBytes("1,0");
+                                        socketGuest.Send(data);
+                                    }
                                 }
                             }     
                         }
                         else  // if BOOM
                         {
+                            string[] info = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
+                            string isShipDead = info[1];
+
                             Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
                             Controls.Add(effect);
                             Cells.enemyFieldCondition[row, column] = 3;
+
+                            if (isShipDead == "1")
+                            {
+                                Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
+                                for (byte i = 0; i < border.Count; i++)
+                                    Controls.Add(border[i]);
+                            }
                         }
                     }
                     else // rbGuest checked
@@ -170,21 +189,40 @@ namespace ButtleShip
 
                                     Cells.myFieldCondition[_row, _column] = 3;
 
-                                    Effects.SplashBorderMy(out List<PictureBox> _border, _row, _column);
-                                    for (byte i = 0; i < _border.Count; i++)
-                                        Controls.Add(_border[i]);
+                                    Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
+                                    if (isShipDead)
+                                    {
+                                        for (byte i = 0; i < border.Count; i++)
+                                            Controls.Add(border[i]);
 
-                                    data = new byte[10];
-                                    data = Encoding.Unicode.GetBytes("1");
-                                    socket.Send(data);
+                                        data = new byte[10];
+                                        data = Encoding.Unicode.GetBytes("1,1");
+                                        socket.Send(data);
+                                    }
+                                    else
+                                    {
+                                        data = new byte[10];
+                                        data = Encoding.Unicode.GetBytes("1,0");
+                                        socket.Send(data);
+                                    }
                                 }
                             }
                         }
                         else  // if BOOM
                         {
+                            string[] info = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
+                            string isShipDead = info[1];
+
                             Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
                             Controls.Add(effect);
                             Cells.enemyFieldCondition[row, column] = 3;
+
+                            if (isShipDead == "1")
+                            {
+                                Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
+                                for (byte i = 0; i < border.Count; i++)
+                                    Controls.Add(border[i]);
+                            }
                         }
                     }
                 }
@@ -267,13 +305,22 @@ namespace ButtleShip
 
                         Cells.myFieldCondition[row, column] = 3;
 
-                        Effects.SplashBorderMy(out List<PictureBox> border, row, column);
-                        for (byte i = 0; i < border.Count; i++)
-                            Controls.Add(border[i]);
+                        Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
+                        if (isShipDead)
+                        {
+                            for (byte i = 0; i < border.Count; i++)
+                                Controls.Add(border[i]);
 
-                        data = new byte[10];
-                        data = Encoding.Unicode.GetBytes("1");
-                        socket.Send(data);
+                            data = new byte[10];
+                            data = Encoding.Unicode.GetBytes("1,1");
+                            socket.Send(data);
+                        }
+                        else 
+                        {
+                            data = new byte[10];
+                            data = Encoding.Unicode.GetBytes("1,0");
+                            socket.Send(data);
+                        }
                     }
                 }
             }

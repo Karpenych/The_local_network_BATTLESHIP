@@ -136,10 +136,25 @@ namespace ButtleShip
             }
         }
 
-        static public void KillEnemyShip()
+        static public void KillEnemyShip(byte shipLength)
         {
-
+            switch (shipLength)
+            {
+                case 1:
+                    enemyShip1Counter--;
+                    break;
+                case 2:
+                    enemyShip2Counter--;
+                    break;
+                case 3:
+                    enemyShip3Counter--;
+                    break;
+                case 4:
+                    enemyShip4Counter--;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
-s
