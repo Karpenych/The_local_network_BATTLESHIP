@@ -115,5 +115,31 @@ namespace ButtleShip
             });
         }
 
+        static public void KillMyShip(byte shipLength)
+        {
+            switch (shipLength)
+            {
+                case 1:
+                    myShip1Counter--;
+                    break;
+                case 2:
+                    myShip2Counter--;
+                    break;
+                case 3:
+                    myShip3Counter--;
+                    break;
+                case 4:
+                    myShip4Counter--;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        static public void KillEnemyShip()
+        {
+
+        }
     }
 }
+s

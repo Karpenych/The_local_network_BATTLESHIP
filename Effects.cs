@@ -140,6 +140,9 @@ namespace ButtleShip
                 }
 
                 if (!isError)
+                {
+                    Ships.KillMyShip(shipLength);
+
                     for (byte angleRow = (byte)(row - 1); angleRow <= bottom; angleRow++)
                         for (byte angleColumn = (byte)(column - 1); angleColumn <= right; angleColumn++)
                             if (angleRow > 0 && angleRow < 11 && angleColumn > 0 && angleColumn < 11 && Cells.enemyFieldCondition[angleRow, angleColumn] == 0)
@@ -155,6 +158,7 @@ namespace ButtleShip
                                 });
                                 Cells.myFieldCondition[row, column] = 2;
                             }
+                }
             }
         }
 

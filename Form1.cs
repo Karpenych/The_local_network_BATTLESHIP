@@ -22,6 +22,16 @@ namespace ButtleShip
         {
             DrawField(280);
             DrawField(850);
+
+            lbMyShip1Counter.Text = Ships.myShip1Counter.ToString();
+            lbMyShip2Counter.Text = Ships.myShip2Counter.ToString();
+            lbMyShip3Counter.Text = Ships.myShip3Counter.ToString();
+            lbMyShip4Counter.Text = Ships.myShip4Counter.ToString();
+
+            lbEnemyShip1Counter.Text = Ships.enemyShip1Counter.ToString();
+            lbEnemyShip2Counter.Text = Ships.enemyShip2Counter.ToString();
+            lbEnemyShip3Counter.Text = Ships.enemyShip3Counter.ToString();
+            lbEnemyShip4Counter.Text = Ships.enemyShip4Counter.ToString();
         }
 
         private void DrawField(int margin)
@@ -209,7 +219,7 @@ namespace ButtleShip
                 rbGuest.Enabled = false;
                 rbServer.Enabled = false;
                 btConnect.Enabled = false;
-
+                
                 socket.Bind(new IPEndPoint(IPAddress.Loopback, 5064));
                 socket.Listen(1);
                 socketGuest = socket.Accept();
