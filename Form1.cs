@@ -268,7 +268,7 @@ namespace ButtleShip
                 Controls.Add(Ships.myPbShipsList[i]);
         }
 
-        private void rbHost_CheckedChanged(object sender, EventArgs e) => btConnect.Visible = true;
+        private void rbHost_CheckedChanged(object sender, EventArgs e)  { btConnect.Visible = true; tbServerIP.Visible = false; }
 
         private void rbGuest_CheckedChanged(object sender, EventArgs e) { btConnect.Visible = true; tbServerIP.Visible = true;  }
 
@@ -282,15 +282,15 @@ namespace ButtleShip
                 rbServer.Enabled = false;
                 btConnect.Enabled = false;
                 
-                socket.Bind(new IPEndPoint(IPAddress.Loopback, 5064));
-                socket.Listen(1);
+                socket.Bind(new IPEndPoint(IPAddress.Loopback, 7064));
+                socket.Listen(10);
                 socketGuest = socket.Accept();
             }
             else
             {
                 try 
                 {
-                    socket.Connect(new IPEndPoint(IPAddress.Parse(tbServerIP.Text), 5064));
+                    socket.Connect(new IPEndPoint(IPAddress.Parse(tbServerIP.Text), 7064));
 
                     rbGuest.Enabled = false;
                     rbServer.Enabled = false;
@@ -318,7 +318,6 @@ namespace ButtleShip
                         data = new byte[10];
                         data = Encoding.Unicode.GetBytes("0");
                         socket.Send(data);
-
                         break;
                     }
                     else // if enemy boom
@@ -349,6 +348,7 @@ namespace ButtleShip
                         {
                             data = new byte[10];
                             data = Encoding.Unicode.GetBytes("1,0");
+                            Thread.Sleep(5000);  // ¬Œ“ “”“ ﬂ œ¿À¿Ã¿À—ﬂ
                             socket.Send(data);
                         }
                     }
