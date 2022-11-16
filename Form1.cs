@@ -143,7 +143,7 @@ namespace ButtleShip
                 Controls.Add(effect);
                 Cells.enemyFieldCondition[row, column] = 2;
 
-                MessageBox.Show("I_Splash");
+                                                                                MessageBox.Show("I_Splash"); 
 
                 Wait(ref data, socket);
             }
@@ -156,15 +156,11 @@ namespace ButtleShip
                 Controls.Add(effect);
                 Cells.enemyFieldCondition[row, column] = 3;
 
-                MessageBox.Show("I_Boom");
-
                 if (isShipDead == "1")
                 {
                     Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
                     for (byte i = 0; i < border.Count; i++)
                         Controls.Add(border[i]);
-
-                    MessageBox.Show("I Kill ship!!!");
 
                     if (Ships.enemyShipTotal == 0)
                     {
@@ -192,8 +188,7 @@ namespace ButtleShip
 
                 data = new byte[10];
                 data = Encoding.Unicode.GetBytes("0");
-                socket.Send(data);
-                MessageBox.Show("LoL he miss)))");
+                socket.Send(data);                              
                 return;
             }
             else // if enemy boom
@@ -213,8 +208,7 @@ namespace ButtleShip
                     data = new byte[10];
                     data = Encoding.Unicode.GetBytes("1,1");
                     socket.Send(data);
-
-                    MessageBox.Show("he kill my ship!!!!!!!");
+                                                                            MessageBox.Show("he kill my ship!!!!!!!");
 
                     if (Ships.myShipTotal == 0)
                     {
@@ -230,7 +224,7 @@ namespace ButtleShip
                     data = new byte[10];
                     data = Encoding.Unicode.GetBytes("1,0");
                     socket.Send(data);
-                    MessageBox.Show("Oh, he boom me((");
+                                                                             MessageBox.Show("Oh, he boom me((");
                     Wait(ref data, socket);
                     return;
                 }
