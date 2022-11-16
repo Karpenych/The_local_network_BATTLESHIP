@@ -244,7 +244,7 @@ namespace ButtleShip
                                 if (Ships.enemyShipTotal == 0)
                                 {
                                     MessageBox.Show("Dude, you win", "", MessageBoxButtons.OK);
-                                    Form1.ActiveForm.Close();
+                                    ActiveForm.Close();
                                 }
                             }
                         }
@@ -322,6 +322,7 @@ namespace ButtleShip
                     }
                     else // if enemy boom
                     {
+                        
                         Effects.AddMyFieldEffect(out PictureBox effect, row, column, "boom");
                         Controls.Add(effect);
                         effect.BringToFront();
@@ -348,7 +349,7 @@ namespace ButtleShip
                         {
                             data = new byte[10];
                             data = Encoding.Unicode.GetBytes("1,0");
-                            Thread.Sleep(5000);  // ¬Œ“ “”“ ﬂ œ¿À¿Ã¿À—ﬂ
+                            
                             socket.Send(data);
                         }
                     }
