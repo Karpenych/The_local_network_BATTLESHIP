@@ -9,10 +9,10 @@ using System.Windows.Forms;
 
 namespace ButtleShip
 {
-    internal class Local_Network : Form1
+    internal class Local_Network : Form
     {
 
-        public void Hod(ref byte[] data, Socket socket, byte row, byte column, string row_column)
+        public void Shoot(ref byte[] data, Socket socket, byte row, byte column, string row_column)
         {
             data = new byte[10];
             data = Encoding.Unicode.GetBytes(row_column);
@@ -26,7 +26,7 @@ namespace ButtleShip
                 Controls.Add(effect);
                 Cells.enemyFieldCondition[row, column] = 2;
 
-                Jdu(ref data, socket);
+                Wait(ref data, socket);
             }
             else  // if BOOM
             {
@@ -55,7 +55,7 @@ namespace ButtleShip
 
 
 
-        public void Jdu(ref byte[] data, Socket socket)
+        public void Wait(ref byte[] data, Socket socket)
         {
             data = new byte[10];
             int bytes = socket.Receive(data);
@@ -99,7 +99,7 @@ namespace ButtleShip
                         ActiveForm.Close();
                     }
 
-                    Jdu(ref data, socket);
+                    Wait(ref data, socket);
                     return;
                 }
                 else
@@ -107,7 +107,7 @@ namespace ButtleShip
                     data = new byte[10];
                     data = Encoding.Unicode.GetBytes("1,0");
                     socket.Send(data);
-                    Jdu(ref data, socket);
+                    Wait(ref data, socket);
                     return;
                 }
             }

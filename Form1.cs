@@ -69,185 +69,11 @@ namespace ButtleShip
                 {
                     if (rbServer.Checked)
                     {
-                        data = new byte[10];
-                        data = Encoding.Unicode.GetBytes($"{row},{column}");
-                        socketGuest.Send(data);
-                        data = new byte[10];
-                        int bytes = socketGuest.Receive(data);
-
-                        if (Encoding.Unicode.GetString(data, 0, bytes) == "0") // if SPLASH
-                        {
-                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "splash");
-                            Controls.Add(effect);
-                            Cells.enemyFieldCondition[row, column] = 2;
-
-                            while (true)
-                            {
-                                data = new byte[10];
-                                int _bytes = socketGuest.Receive(data);
-                                string[] _row_col = Encoding.Unicode.GetString(data, 0, _bytes).Split(',');
-                                byte _row = byte.Parse(_row_col[0]);
-                                byte _column = byte.Parse(_row_col[1]);
-
-                                if (Cells.myFieldCondition[_row, _column] == 0)  // if enemy splash
-                                {
-                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "splash");
-                                    Controls.Add(_effect);
-
-                                    Cells.myFieldCondition[_row, _column] = 2;
-
-                                    data = new byte[10];
-                                    data = Encoding.Unicode.GetBytes("0");
-                                    socketGuest.Send(data);
-
-                                    break;
-                                }
-                                else  // if enemy boom
-                                {
-                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "boom");
-                                    Controls.Add(_effect);
-                                    _effect.BringToFront();
-
-                                    Cells.myFieldCondition[_row, _column] = 3;
-
-                                    Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
-                                    if (isShipDead)
-                                    {
-                                        for (byte i = 0; i < border.Count; i++)
-                                            Controls.Add(border[i]);
-
-                                        data = new byte[10];
-                                        data = Encoding.Unicode.GetBytes("1,1");
-                                        socketGuest.Send(data);
-
-                                        if (Ships.myShipTotal == 0)
-                                        {
-                                            MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
-                                            Form1.ActiveForm.Close();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        data = new byte[10];
-                                        data = Encoding.Unicode.GetBytes("1,0");
-                                        socketGuest.Send(data);
-                                    }
-                                }
-                            }     
-                        }
-                        else  // if BOOM
-                        {
-                            string[] info = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
-                            string isShipDead = info[1];
-
-                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
-                            Controls.Add(effect);
-                            Cells.enemyFieldCondition[row, column] = 3;
-
-                            if (isShipDead == "1")
-                            {
-                                Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
-                                for (byte i = 0; i < border.Count; i++)
-                                    Controls.Add(border[i]);
-
-                                if (Ships.enemyShipTotal == 0)
-                                {
-                                    MessageBox.Show("Dude, you win", "", MessageBoxButtons.OK);
-                                    Form1.ActiveForm.Close();
-                                }
-                            }
-                        }
+                        Shoot(ref data, socketGuest, row, column, row.ToString()+","+column.ToString());
                     }
                     else // rbGuest checked
                     {
-                        data = new byte[10];
-                        data = Encoding.Unicode.GetBytes($"{row},{column}");
-                        socket.Send(data);
-                        data = new byte[10];
-                        int bytes = socket.Receive(data);
-
-                        if (Encoding.Unicode.GetString(data, 0, bytes) == "0") // if SPLASH
-                        {
-                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "splash");
-                            Controls.Add(effect);
-                            Cells.enemyFieldCondition[row, column] = 2;
-
-                            while (true)
-                            {
-                                data = new byte[10];
-                                int _bytes = socket.Receive(data);
-                                string[] _row_col = Encoding.Unicode.GetString(data, 0, _bytes).Split(',');
-                                byte _row = byte.Parse(_row_col[0]);
-                                byte _column = byte.Parse(_row_col[1]);
-
-                                if (Cells.myFieldCondition[_row, _column] == 0)  // if enemy splash
-                                {
-                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "splash");
-                                    Controls.Add(_effect);
-
-                                    Cells.myFieldCondition[_row, _column] = 2;
-
-                                    data = new byte[10];   
-                                    data = Encoding.Unicode.GetBytes("0");
-                                    socket.Send(data);
-
-                                    break;
-                                }
-                                else  // if enemy boom
-                                {
-                                    Effects.AddMyFieldEffect(out PictureBox _effect, _row, _column, "boom");
-                                    Controls.Add(_effect);
-                                    _effect.BringToFront();
-
-                                    Cells.myFieldCondition[_row, _column] = 3;
-
-                                    Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
-                                    if (isShipDead)
-                                    {
-                                        for (byte i = 0; i < border.Count; i++)
-                                            Controls.Add(border[i]);
-
-                                        data = new byte[10];
-                                        data = Encoding.Unicode.GetBytes("1,1");
-                                        socket.Send(data);
-
-                                        if (Ships.myShipTotal == 0)
-                                        {
-                                            MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
-                                            Form1.ActiveForm.Close();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        data = new byte[10];
-                                        data = Encoding.Unicode.GetBytes("1,0");
-                                        socket.Send(data);
-                                    }
-                                }
-                            }
-                        }
-                        else  // if BOOM
-                        {
-                            string[] info = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
-                            string isShipDead = info[1];
-
-                            Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
-                            Controls.Add(effect);
-                            Cells.enemyFieldCondition[row, column] = 3;
-
-                            if (isShipDead == "1")
-                            {
-                                Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
-                                for (byte i = 0; i < border.Count; i++)
-                                    Controls.Add(border[i]);
-
-                                if (Ships.enemyShipTotal == 0)
-                                {
-                                    MessageBox.Show("Dude, you win", "", MessageBoxButtons.OK);
-                                    ActiveForm.Close();
-                                }
-                            }
-                        }
+                        Shoot(ref data, socket, row, column, row.ToString() + "," + column.ToString());
                     }
                 }
             }
@@ -299,60 +125,114 @@ namespace ButtleShip
                 }
                 catch { MessageBox.Show("Server no respond"); return; }
 
+                Wait(ref data, socket);
+            }
+        }
 
-                while (true)
+        public void Shoot(ref byte[] data, Socket socket, byte row, byte column, string row_column)
+        {
+            data = new byte[10];
+            data = Encoding.Unicode.GetBytes(row_column);
+            socket.Send(data);
+            data = new byte[10];
+            int bytes = socket.Receive(data);
+
+            if (Encoding.Unicode.GetString(data, 0, bytes) == "0") // if SPLASH
+            {
+                Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "splash");
+                Controls.Add(effect);
+                Cells.enemyFieldCondition[row, column] = 2;
+
+                MessageBox.Show("I_Splash");
+
+                Wait(ref data, socket);
+            }
+            else  // if BOOM
+            {
+                string[] info = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
+                string isShipDead = info[1];
+
+                Effects.AddEnemyFieldEffect(out PictureBox effect, row, column, "boom");
+                Controls.Add(effect);
+                Cells.enemyFieldCondition[row, column] = 3;
+
+                MessageBox.Show("I_Boom");
+
+                if (isShipDead == "1")
+                {
+                    Effects.SplashBorderEnemy(out List<PictureBox> border, row, column);
+                    for (byte i = 0; i < border.Count; i++)
+                        Controls.Add(border[i]);
+
+                    MessageBox.Show("I Kill ship!!!");
+
+                    if (Ships.enemyShipTotal == 0)
+                    {
+                        MessageBox.Show("Dude, you win", "", MessageBoxButtons.OK);
+                        ActiveForm.Close();
+                    }
+                }
+            }
+        }
+
+        public void Wait(ref byte[] data, Socket socket)
+        {
+            data = new byte[10];
+            int bytes = socket.Receive(data);
+            string[] row_col = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
+            byte row = byte.Parse(row_col[0]);
+            byte column = byte.Parse(row_col[1]);
+
+            if (Cells.myFieldCondition[row, column] == 0)  // if enemy splash
+            {
+                Effects.AddMyFieldEffect(out PictureBox effect, row, column, "splash");
+                Controls.Add(effect);
+
+                Cells.myFieldCondition[row, column] = 2;
+
+                data = new byte[10];
+                data = Encoding.Unicode.GetBytes("0");
+                socket.Send(data);
+                MessageBox.Show("LoL he miss)))");
+                return;
+            }
+            else // if enemy boom
+            {
+                Effects.AddMyFieldEffect(out PictureBox effect, row, column, "boom");
+                Controls.Add(effect);
+                effect.BringToFront();
+
+                Cells.myFieldCondition[row, column] = 3;
+
+                Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
+                if (isShipDead)
+                {
+                    for (byte i = 0; i < border.Count; i++)
+                        Controls.Add(border[i]);
+
+                    data = new byte[10];
+                    data = Encoding.Unicode.GetBytes("1,1");
+                    socket.Send(data);
+
+                    MessageBox.Show("he kill my ship!!!!!!!");
+
+                    if (Ships.myShipTotal == 0)
+                    {
+                        MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
+                        ActiveForm.Close();
+                    }
+
+                    Wait(ref data, socket);
+                    return;
+                }
+                else
                 {
                     data = new byte[10];
-                    int bytes = socket.Receive(data);
-                    string[] row_col = Encoding.Unicode.GetString(data, 0, bytes).Split(',');
-                    byte row = byte.Parse(row_col[0]);
-                    byte column = byte.Parse(row_col[1]);
-
-                    if (Cells.myFieldCondition[row, column] == 0)  // if enemy splash
-                    {
-                        Effects.AddMyFieldEffect(out PictureBox effect, row, column, "splash");
-                        Controls.Add(effect);
-
-                        Cells.myFieldCondition[row, column] = 2;
-
-                        data = new byte[10];
-                        data = Encoding.Unicode.GetBytes("0");
-                        socket.Send(data);
-                        break;
-                    }
-                    else // if enemy boom
-                    {
-                        
-                        Effects.AddMyFieldEffect(out PictureBox effect, row, column, "boom");
-                        Controls.Add(effect);
-                        effect.BringToFront();
-
-                        Cells.myFieldCondition[row, column] = 3;
-
-                        Effects.SplashBorderMy(out List<PictureBox> border, row, column, out bool isShipDead);
-                        if (isShipDead)
-                        {
-                            for (byte i = 0; i < border.Count; i++)
-                                Controls.Add(border[i]);
-
-                            data = new byte[10];
-                            data = Encoding.Unicode.GetBytes("1,1");
-                            socket.Send(data);
-
-                            if (Ships.myShipTotal == 0)
-                            {
-                                MessageBox.Show("Dude, you lose", "", MessageBoxButtons.OK);
-                                Form1.ActiveForm.Close();
-                            }
-                        }
-                        else 
-                        {
-                            data = new byte[10];
-                            data = Encoding.Unicode.GetBytes("1,0");
-                            
-                            socket.Send(data);
-                        }
-                    }
+                    data = Encoding.Unicode.GetBytes("1,0");
+                    socket.Send(data);
+                    MessageBox.Show("Oh, he boom me((");
+                    Wait(ref data, socket);
+                    return;
                 }
             }
         }
